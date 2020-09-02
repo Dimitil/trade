@@ -5,13 +5,26 @@
 #include <vector>
 #include <sstream>
 
+struct Snapshot{
+    long int m_curTime;
+    std::pair<double, int> m_asks[20];
+    std::pair<double, int> m_bids[20];
+
+    Snapshot(int t, std::pair<double, int> ask[], std::pair<double, int> bid[]){
+        m_curTime=t;
+
+        for(int i=0; i<20; i++){
+            m_asks[i]=ask[i];
+            m_bids[i]=bid[i];
+        }
+    }    
+};
+
 int main()
 {
 
-    std::vector<std::pair<double, int>> asks;
-    asks.resize(20);
-    std::vector<std::pair<double, int>> bids;
-    bids.resize(20);
+    std::pair<double, int> asks[20];
+    std::pair<double, int> bids[20];
     std::ifstream inf("/home/dmitry/cpp/birja/huobi_dm_depth.log");
 
     if (!inf)
@@ -35,15 +48,13 @@ int main()
     std::string buf;
     double price=0;
     int amount=0;
-    int curTime=0;
+    long int curTime=0;
     while(ist) {
         ist>>buf;
-        //std::cout<<buf<<'\n';
         if(buf=="time"){
             ist>>curTime;
         }
-
-        }
+       
         if(buf=="asks")
         {
             for(int i=0; i<20; i++){
@@ -60,12 +71,13 @@ int main()
             bids[i]=std::make_pair(price, amount);
             }
         }
+    }
 
-
+    Snapshot S(curTime, asks, bids);
 
     for(int i=0; i<20; i++)
     {
-        std::cout<<asks[i].first<<'\t'<<asks[i].second;
+        std::cout<<S.m_asks[i].first<<'\t'<<S.m_asks[i].second;
         std::cout<<'\n';
     }
 
@@ -73,7 +85,7 @@ int main()
 
     for(int i=0; i<20; i++)
     {
-        std::cout<<bids[i].first<<'\t'<<bids[i].second;
+        std::cout<<S.m_bids[i].first<<'\t'<<S.m_bids[i].second;
         std::cout<<'\n';
     }
 
