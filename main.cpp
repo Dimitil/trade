@@ -10,21 +10,63 @@ struct Snapshot{
     std::pair<double, int> m_asks[20];
     std::pair<double, int> m_bids[20];
 
-    Snapshot(int t, std::pair<double, int> ask[], std::pair<double, int> bid[]){
-        m_curTime=t;
-
-        for(int i=0; i<20; i++){
-            m_asks[i]=ask[i];
-            m_bids[i]=bid[i];
+    void print() const{
+        std::cout<<'\n'<<m_curTime<<"\n\n";
+        for(int i=0; i<20; i++)
+        {
+            std::cout<<m_asks[i].first<<'\t'<<m_asks[i].second;
+            std::cout<<'\n';
         }
-    }    
+        std::cout<<'\n';
+        for(int i=0; i<20; i++)
+        {
+            std::cout<<m_bids[i].first<<'\t'<<m_bids[i].second;
+            std::cout<<'\n';
+        }
+    }
+
+    void init(std::string &strInput) {
+        std::istringstream ist(strInput);
+        std::string buf("");
+        double price=-1;
+        int amount=-1;
+        while(ist) {
+            ist>>buf;
+            if(buf=="time"){
+                ist>>m_curTime;
+            }
+
+            if(buf=="asks"){
+                for(int i=0; i<20; i++){
+                ist>>price;
+                ist>>amount;
+                m_asks[i]=std::make_pair(price, amount);
+                }
+            }
+
+            if(buf=="bids"){
+                for(int i=0; i<20; i++){
+                    ist>>price;
+                    ist>>amount;
+                    m_bids[i]=std::make_pair(price, amount);
+                }
+            }
+        }
+    }
 };
+
+void formatStr(std::string &strInput){
+    const std::string& delims = "[]\",:";
+    for(auto t_iter = strInput.begin(); t_iter != strInput.end(); ++t_iter){
+        if(delims.find(*t_iter) != std::string::npos){
+            *t_iter = ' ';
+        }
+    }
+}
 
 int main()
 {
 
-    std::pair<double, int> asks[20];
-    std::pair<double, int> bids[20];
     std::ifstream inf("/home/dmitry/cpp/birja/huobi_dm_depth.log");
 
     if (!inf)
@@ -33,61 +75,17 @@ int main()
         exit(1);
     }
 
+    Snapshot S{};
 
-    const std::string& delims = "[]\",:";
     std::string strInput;
+
     std::getline(inf, strInput);
 
-    for(auto t_iter = strInput.begin(); t_iter != strInput.end(); ++t_iter){
-                               //Если в разделителях найден текущий символ - меняем его на пробел
-        if(delims.find(*t_iter) != std::string::npos){
-            *t_iter = ' ';
-        }
-    }
-    std::istringstream ist(strInput);
-    std::string buf;
-    double price=0;
-    int amount=0;
-    long int curTime=0;
-    while(ist) {
-        ist>>buf;
-        if(buf=="time"){
-            ist>>curTime;
-        }
-       
-        if(buf=="asks")
-        {
-            for(int i=0; i<20; i++){
-            ist>>price;
-            ist>>amount;
-            asks[i]=std::make_pair(price, amount);
-            }
-        }
+    formatStr(strInput);
 
-        if(buf=="bids"){
-            for(int i=0; i<20; i++){
-            ist>>price;
-            ist>>amount;
-            bids[i]=std::make_pair(price, amount);
-            }
-        }
-    }
+    S.init(strInput);
 
-    Snapshot S(curTime, asks, bids);
-
-    for(int i=0; i<20; i++)
-    {
-        std::cout<<S.m_asks[i].first<<'\t'<<S.m_asks[i].second;
-        std::cout<<'\n';
-    }
-
-    std::cout<<'\n';
-
-    for(int i=0; i<20; i++)
-    {
-        std::cout<<S.m_bids[i].first<<'\t'<<S.m_bids[i].second;
-        std::cout<<'\n';
-    }
+    S.print();
 
     return 0;
 }
