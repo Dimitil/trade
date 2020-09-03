@@ -80,32 +80,22 @@ struct Snapshot{
                 while(haveData(ist)){
                     ist>>price;
                     ist>>amount;
-                    auto it=m_asks.find(price);
-                    if(it!=m_asks.end()){
                         m_asks[price]=amount;
                         if(0==amount){
+                            auto it=m_asks.find(price);
                             m_asks.erase(it);
                         }
-                    }                
-                    else{
-                        std::cerr<<"\n\n\nERROR UPDATE ASKS\n\n";
                     }
                 }
-              }
 
             if(buf=="bids"){
                while(haveData(ist)){
                     ist>>price;
                     ist>>amount;
-                    auto it=m_bids.find(price);
-                    if(it!=m_bids.end()){
-                        m_bids[price]=amount;
-                        if(0==amount){
+                    m_bids[price]=amount;
+                    if(0==amount){
+                            auto it=m_bids.find(price);
                             m_bids.erase(it);
-                        }
-                    }                
-                    else{
-                        std::cerr<<"\n\n\nERROR UPDATE bids\n\n";
                     }
                }
             }
@@ -143,7 +133,7 @@ int main()
     S.init(strInput);
     S.print();
 
-    for(int i=0; i<100; i++){
+    for(int i=0; i<524; i++){
         std::getline(inf, strInput);
         formatStr(strInput);
         S.update(strInput);
