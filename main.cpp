@@ -2,27 +2,27 @@
 #include <fstream>
 #include <string>
 #include <cstdlib> // для использования функции exit()
-#include <vector>
 #include <sstream>
+#include <map>
 
 struct Snapshot{
     long int m_curTime;
-    std::pair<double, int> m_asks[20];
-    std::pair<double, int> m_bids[20];
+    std::map <double, int> m_asks;
+    std::map <double, int> m_bids;
 
     void print() const{
         std::cout<<'\n'<<m_curTime<<"\n\n";
-        for(int i=0; i<20; i++)
+        for(auto it=m_asks.begin(); it!=m_asks.end(); it++)
         {
-            std::cout<<m_asks[i].first<<'\t'<<m_asks[i].second;
+            std::cout<<it->first<<'\t'<<it->second;
             std::cout<<'\n';
         }
         std::cout<<'\n';
-        for(int i=0; i<20; i++)
+        for(auto it=m_bids.begin(); it!=m_bids.end(); it++)
         {
-            std::cout<<m_bids[i].first<<'\t'<<m_bids[i].second;
+            std::cout<<it->first<<'\t'<<it->second;
             std::cout<<'\n';
-        }
+        }   
     }
 
     void init(std::string &strInput) {
@@ -40,7 +40,7 @@ struct Snapshot{
                 for(int i=0; i<20; i++){
                 ist>>price;
                 ist>>amount;
-                m_asks[i]=std::make_pair(price, amount);
+                m_asks[price] = amount;
                 }
             }
 
@@ -48,7 +48,7 @@ struct Snapshot{
                 for(int i=0; i<20; i++){
                     ist>>price;
                     ist>>amount;
-                    m_bids[i]=std::make_pair(price, amount);
+                    m_bids[price]= amount;
                 }
             }
         }
@@ -76,24 +76,42 @@ struct Snapshot{
                 ist>>m_curTime;
             }
 
-            if(buf=="asks" && haveData(ist)){
+            if(buf=="asks"){
+                while(haveData(ist)){
                     ist>>price;
                     ist>>amount;
-                    std::cout<<price<<' '<<amount;}
-                else {
-                    std::cout<<"no asks\n";
+                    auto it=m_asks.find(price);
+                    if(it!=m_asks.end()){
+                        m_asks[price]=amount;
+                        if(0==amount){
+                            m_asks.erase(it);
+                        }
+                    }                
+                    else{
+                        std::cerr<<"\n\n\nERROR UPDATE ASKS\n\n";
+                    }
                 }
+              }
 
-            if(buf=="bids" && haveData(ist)){
+            if(buf=="bids"){
+               while(haveData(ist)){
                     ist>>price;
                     ist>>amount;
-                    std::cout<<price<<' '<<amount;}
-                else {
-                    std::cout<<"no bids\n";
-                }
-
+                    auto it=m_bids.find(price);
+                    if(it!=m_bids.end()){
+                        m_bids[price]=amount;
+                        if(0==amount){
+                            m_bids.erase(it);
+                        }
+                    }                
+                    else{
+                        std::cerr<<"\n\n\nERROR UPDATE bids\n\n";
+                    }
+               }
             }
-         }
+        }
+    }
+         
     
 };
 
@@ -108,7 +126,7 @@ void formatStr(std::string &strInput){
 
 int main()
 {
-
+    std::cout.precision(7);
     std::ifstream inf("/home/dmitry/cpp/birja/huobi_dm_depth.log");
 
     if (!inf)
@@ -125,10 +143,13 @@ int main()
     S.init(strInput);
     S.print();
 
-    std::getline(inf, strInput);
-    formatStr(strInput);
-    std::cout<<strInput;
-    S.update(strInput);
+    for(int i=0; i<100; i++){
+        std::getline(inf, strInput);
+        formatStr(strInput);
+        S.update(strInput);
+        S.print();
+    }
+    
 
 
     return 0;
