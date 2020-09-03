@@ -53,6 +53,48 @@ struct Snapshot{
             }
         }
     }
+
+
+    bool haveData(std::istringstream &ist){
+        char ch=' ';
+        ist.get(ch);
+        while(isspace(ch)){
+            ist.get(ch);
+        }
+        ist.putback(ch);
+        return isdigit(ch);
+    }
+
+    void update(std::string strInput){
+        std::istringstream ist(strInput);
+        std::string buf("");
+        double price=-1;
+        int amount=-1;
+        while(ist) {
+            ist>>buf;
+            if(buf=="time"){
+                ist>>m_curTime;
+            }
+
+            if(buf=="asks" && haveData(ist)){
+                    ist>>price;
+                    ist>>amount;
+                    std::cout<<price<<' '<<amount;}
+                else {
+                    std::cout<<"no asks\n";
+                }
+
+            if(buf=="bids" && haveData(ist)){
+                    ist>>price;
+                    ist>>amount;
+                    std::cout<<price<<' '<<amount;}
+                else {
+                    std::cout<<"no bids\n";
+                }
+
+            }
+         }
+    
 };
 
 void formatStr(std::string &strInput){
@@ -78,14 +120,16 @@ int main()
     Snapshot S{};
 
     std::string strInput;
+    std::getline(inf, strInput);
+    formatStr(strInput);
+    S.init(strInput);
+    S.print();
 
     std::getline(inf, strInput);
-
     formatStr(strInput);
+    std::cout<<strInput;
+    S.update(strInput);
 
-    S.init(strInput);
-
-    S.print();
 
     return 0;
 }
