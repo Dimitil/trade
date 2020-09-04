@@ -55,24 +55,21 @@ public:
     {
         int amount=-1;
         double price = -1;
-         while(haveData(ist)){
-             ist>>price;
-             ist>>amount;
+         while(haveData(ist) && ist>>price && ist>>amount){
              map[price]=amount;
              if(0==amount){
                  auto it=map.find(price);
                  map.erase(it);
              }
+             amount=-1;
+             price=-1;
         }
-
     }
 
     void updateSnapshot(std::string strInput){
         formatStr(strInput);
         std::istringstream ist(strInput);
         std::string buf("");
-        double price=-1;
-        int amount=-1;
         while(ist) {
             ist>>buf;
             if(buf=="time"){
@@ -95,8 +92,6 @@ public:
             "}, {"<<m_asks.begin()->first<<"}, {"<<m_asks.begin()->second<<"}\n";
     }
 
-         
-    
 };
 
 
@@ -114,11 +109,11 @@ int main()
 
     std::string strInput;
 
-    while(inf){
-        std::getline(inf, strInput);
+    while(std::getline(inf, strInput)){
         S.updateSnapshot(strInput);
         S.printTrue();
     }
+    inf.close();
     
     return 0;
 }
