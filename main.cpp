@@ -13,6 +13,16 @@ void formatStr(std::string &strInput){
     }
 }
 
+bool haveData(std::istringstream &ist){
+    char ch=' ';
+    ist.get(ch);
+    while(isspace(ch)){
+       ist.get(ch);
+    }
+    ist.putback(ch);
+    return isdigit(ch);
+}
+
 
 class Snapshot{
     long int m_curTime;
@@ -41,16 +51,7 @@ public:
         }   
     }
 
-    bool haveData(std::istringstream &ist){
-        char ch=' ';
-        ist.get(ch);
-        while(isspace(ch)){
-            ist.get(ch);
-        }
-        ist.putback(ch);
-        return isdigit(ch);
-    }
-
+   
     void updateMap(std::istringstream &ist, std::map <double, int> &map)
     {
         int amount=-1;
