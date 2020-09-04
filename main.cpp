@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cstdlib> // для использования функции exit()
 #include <sstream>
 #include <map>
 
@@ -40,7 +39,7 @@ struct Snapshot{
         return isdigit(ch);
     }
 
-    void update(std::string strInput){
+    void update(const std::string strInput){
         std::istringstream ist(strInput);
         std::string buf("");
         double price=-1;
@@ -77,7 +76,7 @@ struct Snapshot{
         }
     }
     
-    void printTrue(){
+    void printTrue() const{
 
         std::cout<<'{'<<m_curTime<<"}, {"<<m_bids.rbegin()->first<<"}, {"<<m_bids.rbegin()->second<<
             "}, {"<<m_asks.begin()->first<<"}, {"<<m_asks.begin()->second<<"}\n";
