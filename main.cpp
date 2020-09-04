@@ -11,49 +11,24 @@ struct Snapshot{
     std::map <double, int> m_bids;
 
     void print() const{
+        int num=1;
         std::cout<<'\n'<<m_curTime<<"\n\n";
         for(auto it=m_asks.begin(); it!=m_asks.end(); it++)
         {
+            std::cout<<num++<<')';
             std::cout<<it->first<<'\t'<<it->second;
             std::cout<<'\n';
         }
+        num=1;
         std::cout<<'\n';
         for(auto it=m_bids.begin(); it!=m_bids.end(); it++)
         {
+            
+            std::cout<<num++<<')';
             std::cout<<it->first<<'\t'<<it->second;
             std::cout<<'\n';
         }   
     }
-
-    void init(std::string &strInput) {
-        std::istringstream ist(strInput);
-        std::string buf("");
-        double price=-1;
-        int amount=-1;
-        while(ist) {
-            ist>>buf;
-            if(buf=="time"){
-                ist>>m_curTime;
-            }
-
-            if(buf=="asks"){
-                for(int i=0; i<20; i++){
-                ist>>price;
-                ist>>amount;
-                m_asks[price] = amount;
-                }
-            }
-
-            if(buf=="bids"){
-                for(int i=0; i<20; i++){
-                    ist>>price;
-                    ist>>amount;
-                    m_bids[price]= amount;
-                }
-            }
-        }
-    }
-
 
     bool haveData(std::istringstream &ist){
         char ch=' ';
@@ -101,6 +76,13 @@ struct Snapshot{
             }
         }
     }
+    
+    void printTrue(){
+
+        std::cout<<'{'<<m_curTime<<"}, {"<<m_bids.rbegin()->first<<"}, {"<<m_bids.rbegin()->second<<
+            "}, {"<<m_asks.begin()->first<<"}, {"<<m_asks.begin()->second<<"}\n";
+    }
+
          
     
 };
@@ -118,7 +100,6 @@ int main()
 {
     std::cout.precision(7);
     std::ifstream inf("/home/dmitry/cpp/birja/huobi_dm_depth.log");
-
     if (!inf)
     {
         std::cerr << "could not be opened for reading!" << std::endl;
@@ -128,16 +109,12 @@ int main()
     Snapshot S{};
 
     std::string strInput;
-    std::getline(inf, strInput);
-    formatStr(strInput);
-    S.init(strInput);
-    S.print();
 
-    for(int i=0; i<524; i++){
+    while(inf){
         std::getline(inf, strInput);
         formatStr(strInput);
         S.update(strInput);
-        S.print();
+        S.printTrue();
     }
     
 
