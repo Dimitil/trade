@@ -4,10 +4,22 @@
 #include <sstream>
 #include <map>
 
-struct Snapshot{
+void formatStr(std::string &strInput){
+    const std::string& delims = "[]\",:";
+    for(auto t_iter = strInput.begin(); t_iter != strInput.end(); ++t_iter){
+        if(delims.find(*t_iter) != std::string::npos){
+            *t_iter = ' ';
+        }
+    }
+}
+
+
+class Snapshot{
     long int m_curTime;
     std::map <double, int> m_asks;
     std::map <double, int> m_bids;
+
+public:
 
     void print() const{
         int num=1;
@@ -55,7 +67,8 @@ struct Snapshot{
 
     }
 
-    void update(const std::string strInput){
+    void updateSnapshot(std::string strInput){
+        formatStr(strInput);
         std::istringstream ist(strInput);
         std::string buf("");
         double price=-1;
@@ -86,14 +99,6 @@ struct Snapshot{
     
 };
 
-void formatStr(std::string &strInput){
-    const std::string& delims = "[]\",:";
-    for(auto t_iter = strInput.begin(); t_iter != strInput.end(); ++t_iter){
-        if(delims.find(*t_iter) != std::string::npos){
-            *t_iter = ' ';
-        }
-    }
-}
 
 int main()
 {
@@ -111,12 +116,9 @@ int main()
 
     while(inf){
         std::getline(inf, strInput);
-        formatStr(strInput);
-        S.update(strInput);
+        S.updateSnapshot(strInput);
         S.printTrue();
     }
     
-
-
     return 0;
 }
