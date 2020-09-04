@@ -39,6 +39,22 @@ struct Snapshot{
         return isdigit(ch);
     }
 
+    void updateMap(std::istringstream &ist, std::map <double, int> &map)
+    {
+        int amount=-1;
+        double price = -1;
+         while(haveData(ist)){
+             ist>>price;
+             ist>>amount;
+             map[price]=amount;
+             if(0==amount){
+                 auto it=map.find(price);
+                 map.erase(it);
+             }
+        }
+
+    }
+
     void update(const std::string strInput){
         std::istringstream ist(strInput);
         std::string buf("");
@@ -51,27 +67,11 @@ struct Snapshot{
             }
 
             if(buf=="asks"){
-                while(haveData(ist)){
-                    ist>>price;
-                    ist>>amount;
-                        m_asks[price]=amount;
-                        if(0==amount){
-                            auto it=m_asks.find(price);
-                            m_asks.erase(it);
-                        }
-                    }
-                }
+                updateMap(ist, m_asks);
+            }
 
             if(buf=="bids"){
-               while(haveData(ist)){
-                    ist>>price;
-                    ist>>amount;
-                    m_bids[price]=amount;
-                    if(0==amount){
-                            auto it=m_bids.find(price);
-                            m_bids.erase(it);
-                    }
-               }
+                updateMap(ist, m_bids);
             }
         }
     }
