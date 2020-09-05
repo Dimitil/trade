@@ -6,17 +6,17 @@
 
 void formatStr(std::string &strInput){
     const std::string& delims = "[]\",:";
-    for(auto t_iter = strInput.begin(); t_iter != strInput.end(); ++t_iter){
-        if(delims.find(*t_iter) != std::string::npos){
+    for( auto t_iter = strInput.begin(); t_iter != strInput.end(); ++t_iter ){
+        if( delims.find(*t_iter) != std::string::npos ){
             *t_iter = ' ';
         }
     }
 }
 
-bool haveData(std::istringstream &ist){
-    char ch=' ';
+bool haveData( std::istringstream &ist ){
+    char ch = ' ';
     ist.get(ch);
-    while(isspace(ch)){
+    while( isspace(ch) ){
        ist.get(ch);
     }
     ist.putback(ch);
@@ -37,62 +37,61 @@ public:
         for(auto it=m_asks.begin(); it!=m_asks.end(); it++)
         {
             std::cout << num++ << ')';
-            std::cout << it->first << '\t' <<it->second;
+            std::cout << it->first << '\t' << it->second;
             std::cout<< '\n';
         }
-        num=1;
+        num = 1;
         std::cout << '\n';
-        for(auto it=m_bids.begin(); it!=m_bids.end(); it++)
+        for(auto it = m_bids.begin(); it != m_bids.end(); it++)
         {
-            
-            std::cout<<num++<<')';
-            std::cout<<it->first<<'\t'<<it->second;
-            std::cout<<'\n';
+            std::cout << num++<<')';
+            std::cout << it->first << '\t' << it->second;
+            std::cout << '\n';
         }   
     }
 
    
-    void updateMap(std::istringstream &ist, std::map <double, int> &map)
+    void updateMap( std::istringstream &ist, std::map <double, int> &map)
     {
-        int amount=-1;
+        int amount = -1;
         double price = -1;
-        while(haveData(ist) && ist>>price && ist>>amount){
-            if(0==amount){
-                auto it=map.find(price);
-                if(it != map.end()){
+        while( haveData(ist) && ist >> price && ist >> amount ){
+            if( 0==amount ){
+                auto it = map.find(price);
+                if( it != map.end() ){
                     map.erase(it);
                     continue;
                 }
             }
-            map[price]=amount;
-            amount=-1;
-            price=-1;
+            map[price] = amount;
+            amount = -1;
+            price = -1;
         }
     }
 
-    void updateSnapshot(std::string strInput){
+    void updateSnapshot(std::string &strInput){
         formatStr(strInput);
         std::istringstream ist(strInput);
         std::string buf("");
-        while(ist>>buf) {
-            if(buf=="time"){
-                ist>>m_curTime;
+        while( ist >> buf ) {
+            if( buf == "time"){
+                ist >> m_curTime;
             }
 
-            if(buf=="asks"){
+            if( buf == "asks" ){
                 updateMap(ist, m_asks);
             }
 
-            if(buf=="bids"){
+            if(buf == "bids" ){
                 updateMap(ist, m_bids);
             }
         }
     }
 
    friend std::ostream& operator<< (std::ostream &out, const Snapshot &s){
-        out<<'{'<<s.m_curTime<<"}, {"<<s.m_bids.rbegin()->first<<"}, {"
-            <<s.m_bids.rbegin()->second<<"}, {"<<s.m_asks.begin()->first<<
-            "}, {"<<s.m_asks.begin()->second<<"}\n";
+        out << '{' << s.m_curTime << "}, {" << s.m_bids.rbegin()->first << "}, {"
+            << s.m_bids.rbegin()->second << "}, {" << s.m_asks.begin()->first <<
+            "}, {" << s.m_asks.begin()->second << "}\n";
         return out;
    } 
     
@@ -114,7 +113,7 @@ int main()
     std::string strInput("");
     while(std::getline(inf, strInput)){
         S.updateSnapshot(strInput);
-        std::cout<<S;
+        std::cout << S;
     }
     inf.close();
     
