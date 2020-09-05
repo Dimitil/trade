@@ -33,15 +33,15 @@ public:
 
     void print() const{
         int num=1;
-        std::cout<<'\n'<<m_curTime<<"\n\n";
+        std::cout << '\n' << m_curTime << "\n\n";
         for(auto it=m_asks.begin(); it!=m_asks.end(); it++)
         {
-            std::cout<<num++<<')';
-            std::cout<<it->first<<'\t'<<it->second;
-            std::cout<<'\n';
+            std::cout << num++ << ')';
+            std::cout << it->first << '\t' <<it->second;
+            std::cout<< '\n';
         }
         num=1;
-        std::cout<<'\n';
+        std::cout << '\n';
         for(auto it=m_bids.begin(); it!=m_bids.end(); it++)
         {
             
@@ -57,11 +57,14 @@ public:
         int amount=-1;
         double price = -1;
         while(haveData(ist) && ist>>price && ist>>amount){
-            map[price]=amount;
-            auto it=map.find(price);
-            if(0==amount && it != map.end()){
-                map.erase(it);
+            if(0==amount){
+                auto it=map.find(price);
+                if(it != map.end()){
+                    map.erase(it);
+                    continue;
+                }
             }
+            map[price]=amount;
             amount=-1;
             price=-1;
         }
@@ -108,8 +111,7 @@ int main()
 
     Snapshot S{};
 
-    std::string strInput;
-
+    std::string strInput("");
     while(std::getline(inf, strInput)){
         S.updateSnapshot(strInput);
         std::cout<<S;
