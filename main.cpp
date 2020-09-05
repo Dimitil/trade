@@ -13,14 +13,18 @@ void formatStr(std::string &strInput){
     }
 }
 
-bool haveData( std::istringstream &ist ){
+bool tryGetData( std::istringstream &ist, int &amount, double &price ){
     char ch = ' ';
     ist.get(ch);
     while( isspace(ch) ){
        ist.get(ch);
     }
     ist.putback(ch);
-    return isdigit(ch);
+    if (isdigit(ch)){
+        ist >> price >> amount;
+        return true;
+    }
+    return false;
 }
 
 
@@ -34,7 +38,7 @@ public:
     void print() const{
         int num=1;
         std::cout << '\n' << m_curTime << "\n\n";
-        for(auto it=m_asks.begin(); it!=m_asks.end(); it++)
+        for(auto it = m_asks.begin(); it != m_asks.end(); it++)
         {
             std::cout << num++ << ')';
             std::cout << it->first << '\t' << it->second;
@@ -55,7 +59,7 @@ public:
     {
         int amount = -1;
         double price = -1;
-        while( haveData(ist) && ist >> price && ist >> amount ){
+        while( tryGetData(ist, amount, price) ){
             if( 0==amount ){
                 auto it = map.find(price);
                 if( it != map.end() ){
@@ -89,9 +93,9 @@ public:
     }
 
    friend std::ostream& operator<< (std::ostream &out, const Snapshot &s){
-        out << '{' << s.m_curTime << "}, {" << s.m_bids.rbegin()->first << "}, {"
-            << s.m_bids.rbegin()->second << "}, {" << s.m_asks.begin()->first <<
-            "}, {" << s.m_asks.begin()->second << "}\n";
+        out << '{' << s.m_curTime << "}, {" << s.m_bids.crbegin()->first << "}, {"
+            << s.m_bids.crbegin()->second << "}, {" << s.m_asks.cbegin()->first <<
+            "}, {" << s.m_asks.cbegin()->second << "}\n";
         return out;
    } 
     
