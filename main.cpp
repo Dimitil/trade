@@ -67,9 +67,11 @@ public:
                     continue;
                 }
             }
+            if( price>0 && amount > 0 ){
             map[price] = amount;
             amount = -1;
             price = -1;
+            }
         }
     }
 
