@@ -40,10 +40,8 @@ bool tryGetData( std::istringstream &ist, int &amount, double &price ){
     if(ist.good()){ 
         return true;
     }
-    else {
-        ist.clear();
-        return false;
-    }
+    ist.clear();
+    return false;
 }
 
 class Snapshot{
