@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <exception>
 //#include <regex>
 
 void formatStr(std::string &strInput){
@@ -19,20 +20,31 @@ void formatStr(std::string &strInput){
 //    strInput = std::regex_replace(strInput, reg, " ");
 //}
 
+
+//bool tryGetData( std::istringstream &ist, int &amount, double &price ){
+//    char ch = ' ';
+//    ist.get(ch);
+//    while( isspace(ch) ){
+//       ist.get(ch);
+//    }
+//    ist.putback(ch);
+//    if (isdigit(ch)){
+//        ist >> price >> amount;
+//        return true;
+//    }
+//    return false;
+//}
 bool tryGetData( std::istringstream &ist, int &amount, double &price ){
-    char ch = ' ';
-    ist.get(ch);
-    while( isspace(ch) ){
-       ist.get(ch);
-    }
-    ist.putback(ch);
-    if (isdigit(ch)){
-        ist >> price >> amount;
+    ist >> price >> amount;
+
+    if(ist.good()){ 
         return true;
     }
-    return false;
+    else {
+        ist.clear();
+        return false;
+    }
 }
-
 
 class Snapshot{
     long int m_curTime;
