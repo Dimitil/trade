@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+//#include <regex>
 
 void formatStr(std::string &strInput){
     const std::string& delims = "[]\",:";
@@ -12,6 +13,11 @@ void formatStr(std::string &strInput){
         }
     }
 }
+
+//void formatStr(std::string &strInput){
+//    std::regex reg("\\[|\\]|\"|,|:");
+//    strInput = std::regex_replace(strInput, reg, " ");
+//}
 
 bool tryGetData( std::istringstream &ist, int &amount, double &price ){
     char ch = ' ';
@@ -38,15 +44,15 @@ public:
     void print() const{
         int num=1;
         std::cout << '\n' << m_curTime << "\n\n";
-        for(auto it = m_asks.begin(); it != m_asks.end(); it++)
+        for(auto it = m_asks.cbegin(); it != m_asks.cend(); it++)
         {
             std::cout << num++ << ')';
             std::cout << it->first << '\t' << it->second;
-            std::cout<< '\n';
+            std::cout << '\n';
         }
         num = 1;
         std::cout << '\n';
-        for(auto it = m_bids.begin(); it != m_bids.end(); it++)
+        for(auto it = m_bids.cbegin(); it != m_bids.cend(); it++)
         {
             std::cout << num++<<')';
             std::cout << it->first << '\t' << it->second;
@@ -60,7 +66,7 @@ public:
         int amount = -1;
         double price = -1;
         while( tryGetData(ist, amount, price) ){
-            if( 0==amount ){
+            if( 0 == amount ){
                 auto it = map.find(price);
                 if( it != map.end() ){
                     map.erase(it);
@@ -94,9 +100,10 @@ public:
         }
     }
 
-   friend std::ostream& operator<< (std::ostream &out, const Snapshot &s){
+   friend std::ostream& operator << (std::ostream &out, const Snapshot &s){
         out << '{' << s.m_curTime << "}, {" << s.m_bids.crbegin()->first << "}, {"
-            << s.m_bids.crbegin()->second << "}, {" << s.m_asks.cbegin()->first <<
+            << s.m_bids.crbegin()->second << "}, {" << s.m_asks.cbegin()->first
+            <<
             "}, {" << s.m_asks.cbegin()->second << "}\n";
         return out;
    } 
