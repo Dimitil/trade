@@ -123,8 +123,8 @@ public:
 
 int main()
 {
-    std::cout.precision(7);
-    std::ifstream inf("/home/dmitry/cpp/birja/huobi_dm_depth.log");
+    std::cout.precision(7);//debug version
+    std::ifstream inf("/home/dmitry/cpp/birja/huobi_dm_depth.log");//debug ver
     if (!inf)
     {
         std::cerr << "could not be opened for reading!" << std::endl;
