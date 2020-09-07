@@ -3,7 +3,6 @@
 #include <string>
 #include <sstream>
 #include <map>
-#include <exception>
 
 void formatStr(std::string &strInput){
     const std::string& delims = "[]\",:";
