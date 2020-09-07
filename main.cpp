@@ -4,7 +4,6 @@
 #include <sstream>
 #include <map>
 #include <exception>
-//#include <regex>
 
 void formatStr(std::string &strInput){
     const std::string& delims = "[]\",:";
@@ -15,25 +14,7 @@ void formatStr(std::string &strInput){
     }
 }
 
-//void formatStr(std::string &strInput){
-//    std::regex reg("\\[|\\]|\"|,|:");
-//    strInput = std::regex_replace(strInput, reg, " ");
-//}
 
-
-//bool tryGetData( std::istringstream &ist, int &amount, double &price ){
-//    char ch = ' ';
-//    ist.get(ch);
-//    while( isspace(ch) ){
-//       ist.get(ch);
-//    }
-//    ist.putback(ch);
-//    if (isdigit(ch)){
-//        ist >> price >> amount;
-//        return true;
-//    }
-//    return false;
-//}
 bool tryGetData( std::istringstream &ist, int &amount, double &price ){
     ist >> price >> amount;
 
@@ -121,14 +102,20 @@ public:
 };
 
 
-int main()
+int main(int argc, char* argv[])
 {
-    std::cout.precision(7);//debug version
-    std::ifstream inf("/home/dmitry/cpp/birja/huobi_dm_depth.log");//debug ver
+    if(argc<3){
+        std::cerr<<"few arguments";
+    exit(1);
+    }
+///home/dmitry/cpp/birja/huobi_dm_depth.log
+    std::ifstream inf(argv[1]);
+    std::ofstream ofs(argv[2]);
+    ofs.precision(7);
     if (!inf)
     {
-        std::cerr << "could not be opened for reading!" << std::endl;
-        exit(1);
+        std::cerr<< argv[1] << " could not be opened for reading!" << std::endl;
+        exit(2);
     }
 
     Snapshot S{};
@@ -136,9 +123,10 @@ int main()
     std::string strInput("");
     while(std::getline(inf, strInput)){
         S.updateSnapshot(strInput);
-        std::cout << S;
+        ofs << S;
     }
     inf.close();
+    ofs.close();
     
     return 0;
 }
