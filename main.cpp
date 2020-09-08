@@ -123,6 +123,7 @@ int main(int argc, char* argv[])
     while(std::getline(inf, strInput)){
         S.updateSnapshot(strInput);
         ofs << S;
+        std::cout<< S;
     }
     inf.close();
     ofs.close();

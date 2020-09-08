@@ -23,10 +23,6 @@ void updateMap( std::ifstream &ifs, std::map <double, int> &map)
                     map[price] = amount;
                 }
             }
-           // for(auto it = map.begin(); it != map.end(); ++it){
-           //     std::cout<<it->first<<' '<<it->second<<'\n';
-           // }
-           // std::cout<<'\n';
         }
 }
 
@@ -55,9 +51,6 @@ void updateVector(std::ifstream &ifs, std::vector <std::pair<double, int>> &v){
             }
         }
     }
-    //for(auto i=v.begin(); i!=v.end(); i++){
-    //    std::cout << i->first << ' ' << i->second << '\n';
-    //}
 }
 
 void updateList(std::ifstream &ifs, std::list <std::pair<double, int>> &l){
@@ -84,42 +77,38 @@ void updateList(std::ifstream &ifs, std::list <std::pair<double, int>> &l){
             }
         }
     }
-   
-   //for(auto i=l.begin(); i!=l.end(); i++){
-   //     std::cout << i->first << ' ' << i->second << '\n';
-   // }
 }
 
-static void BM_MapUpdate(benchmark::State& state) {
+void BM_MapUpdate(benchmark::State& state) {
     std::map <double, int> map;
-    std::ifstream ifs("test");
-    for(auto _ : state){
-    updateMap(ifs, map);
-    //map.clear();
+    for(auto _ : state) {
+        std::ifstream ifs("test");
+        updateMap(ifs, map);
+        ifs.close();
     }
 }
-BENCHMARK(BM_MapUpdate);
+BENCHMARK(BM_MapUpdate)->Unit(benchmark::kMillisecond);
 
 
-static void BM_VectorUpdate(benchmark::State& state) {
+void BM_VectorUpdate(benchmark::State& state) {
     std::vector <std::pair <double, int>> vec;
-    std::ifstream ifs("test");
     for(auto _ : state){
-    updateVector(ifs, vec);
-    //vec.clear();
+        std::ifstream ifs("test");
+        updateVector(ifs, vec);
+        ifs.close();
     }
 }
-BENCHMARK(BM_VectorUpdate);
+BENCHMARK(BM_VectorUpdate)->Unit(benchmark::kMillisecond);
 
-static void BM_ListUpdate(benchmark::State& state) {
+void BM_ListUpdate(benchmark::State& state) {
     std::list <std::pair <double, int>> l;
-    std::ifstream ifs("test");
     for(auto _ : state){
-    updateList(ifs, l);
-    //l.clear();
+        std::ifstream ifs("test");
+        updateList(ifs, l);
+        ifs.close();
     }
 }
-BENCHMARK(BM_ListUpdate);
+BENCHMARK(BM_ListUpdate)->Unit(benchmark::kMillisecond);
 
 
 BENCHMARK_MAIN();

@@ -1,6 +1,6 @@
 ----------------------------------------------------------
 Benchmark                Time             CPU   Iterations
 ----------------------------------------------------------
-BM_MapUpdate          16.4 ns         16.4 ns     33027266
-BM_VectorUpdate       19.1 ns         19.1 ns     28841152
-BM_ListUpdate         17.4 ns         17.4 ns     30823294
+BM_MapUpdate           173 ms          173 ms            4
+BM_VectorUpdate        295 ms          295 ms            3
+BM_ListUpdate          250 ms          250 ms            3
