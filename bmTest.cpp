@@ -75,6 +75,9 @@ void BM_MapUpdate(benchmark::State& state) {
     for(int i=0; i<ar_size; i++){
        ifs >> ar_price[i];
        ifs >> ar_amount[i];
+       if(!ifs.good()) {
+           std::cerr<<"\nERROR 1\n";
+           exit(1);
     }
     ifs.close();
 
