@@ -67,19 +67,24 @@ void updateList(double* ar_price, int* ar_amount, std::list <std::pair<double, i
     }
 }
 
-void BM_MapUpdate(benchmark::State& state) {
-    std::map <double, int> map;
+void ar_init(double* ar_price, int* ar_amount){
     std::ifstream ifs("test");
-    double ar_price[ar_size];
-    int ar_amount[ar_size];
     for(int i=0; i<ar_size; i++){
-       ifs >> ar_price[i];
-       ifs >> ar_amount[i];
-       if(!ifs.good()) {
-           std::cerr<<"\nERROR 1\n";
-           exit(1);
+        ifs >> ar_price[i];
+        ifs >> ar_amount[i];
+        if(!ifs.good()) {
+            std::cerr<<"\nERROR 1\n";
+            exit(1);
+        }
     }
     ifs.close();
+}
+
+void BM_MapUpdate(benchmark::State& state) {
+    std::map <double, int> map;
+    double ar_price[ar_size];
+    int ar_amount[ar_size];
+    ar_init(ar_price, ar_amount);
 
     for(auto _ : state) {
         updateMap(ar_price, ar_amount, map);
@@ -90,18 +95,9 @@ BENCHMARK(BM_MapUpdate);//->Unit(benchmark::kMillisecond);
 
 void BM_VectorUpdate(benchmark::State& state) {
     std::vector <std::pair <double, int>> vec;
-    std::ifstream ifs("test");
     double ar_price[ar_size];
     int ar_amount[ar_size];
-    for(int i=0; i<ar_size; i++){
-       ifs >> ar_price[i];
-       ifs >> ar_amount[i];
-       if(!ifs.good()) {
-           std::cerr<<"\nERROR 1\n";
-           exit(1);
-       }
-    }
-    ifs.close();
+    ar_init(ar_price, ar_amount);
 
     for(auto _ : state){
         updateVector(ar_price, ar_amount, vec);
@@ -111,18 +107,9 @@ BENCHMARK(BM_VectorUpdate);//->Unit(benchmark::kMillisecond);
 
 void BM_ListUpdate(benchmark::State& state) {
     std::list <std::pair <double, int>> l;
-    std::ifstream ifs("test");
     double ar_price[ar_size];
     int ar_amount[ar_size];
-    for(int i=0; i<ar_size; i++){
-       ifs >> ar_price[i];
-       ifs >> ar_amount[i];
-       if(!ifs.good()) {
-           std::cerr<<"\nERROR 1\n";
-           exit(1);
-       }
-    }
-    ifs.close();
+    ar_init(ar_price, ar_amount);
 
     for(auto _ : state){
         updateList(ar_price, ar_amount, l);
